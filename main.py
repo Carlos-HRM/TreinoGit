@@ -1,5 +1,6 @@
 import time
 from bridge import (Actuator, Replacer, Vision, Referee)
+from classes import Robot, Ball
 
 
 if __name__ == "__main__":
@@ -37,12 +38,14 @@ if __name__ == "__main__":
             A variavel data_ball é uma lista única que contém os dados da bola. O acesso a eles é feito da mesma forma, porém ele não possui angulo
         '''
 
-        robo0Azul = data_our_bot[0]
-        xAzul0 = robo0Azul.x
+        #robo0Azul = data_our_bot[0]
+        #xAzul0 = robo0Azul.x
         #print("Posição x: ", xAzul0)
-        yAzul0 = robo0Azul.y
+        #yAzul0 = robo0Azul.y
         #print("Posicao y: ", yAzul0)
         #print("")
+        Bola = Ball()
+        Bola.setPoseBall(15,35)
 
         xBola = data_ball.x
         yBola = data_ball.y
