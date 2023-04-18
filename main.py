@@ -1,4 +1,5 @@
 import time
+import pygame
 from bridge import (Actuator, Replacer, Vision, Referee)
 from classes import Robot, Ball
 
@@ -12,6 +13,32 @@ if __name__ == "__main__":
     replacement = Replacer(mray, "224.5.23.2", 10004)
     vision = Vision(mray, "224.0.0.1", 10002)
     referee = Referee(mray, "224.5.23.2", 10003)
+
+    #Initialize the robot
+    robot = Robot(actuator=actuator, index = 0)
+
+    #Configurando teclas do robô
+    keys = {
+        pygame.K_UP: 'move_forward',
+        pygame.K_DOWN: 'move_backward',
+        pygame.K_LEFT: 'turn_left',
+        pygame.K_RIGHT: 'turn_right',
+    }
+
+    # Rastreie o estado atual de cada tecla
+    key_state = {
+        pygame.K_UP: False,
+        pygame.K_DOWN: False,
+        pygame.K_LEFT: False,
+        pygame.K_RIGHT: False,
+}
+
+    # Create a window (optional)
+    pygame.init()
+    screen = pygame.display.set_mode((640, 480))
+    pygame.display.set_caption("FIRASim Control")
+    pygame.key.set_repeat()
+
 
     # Main infinite loop
     while True:
@@ -38,29 +65,31 @@ if __name__ == "__main__":
             A variavel data_ball é uma lista única que contém os dados da bola. O acesso a eles é feito da mesma forma, porém ele não possui angulo
         '''
 
-        #robo0Azul = data_our_bot[0]
-        #xAzul0 = robo0Azul.x
-        #print("Posição x: ", xAzul0)
-        #yAzul0 = robo0Azul.y
-        #print("Posicao y: ", yAzul0)
-        #print("")
-        Bola = Ball()
-        Bola.setPoseBall(15,35)
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key in keys:
+                    # Marque a tecla correspondente como pressionada
+                    key_state[event.key] = True
+            elif event.type == pygame.KEYUP:
+                if event.key in keys:
+                    # Marque a tecla correspondente como liberada e defina a velocidade do robô para 0
+                    key_state[event.key] = False
+                    robot.setVel(0, 0)
 
-        xBola = data_ball.x
-        yBola = data_ball.y
-        print("X bola: ", xBola)
-        print("Y bola: ", yBola)
-        print("")
 
-        '''
-            Para enviar uma velocidade para o simulador, utilizem o seguinte comando:
-            - actuator.send(index, vL, vR)
-            index: O índice do robô que você quer mover (0, 1 ou 2)
-            vL: Velocidade da roda esquerda em m/s
-            vR: Velocidade da roda direita em m/s
-        '''
+        # Atualize a velocidade do robô com base nas teclas pressionadas
+        if key_state[pygame.K_UP]:
+            robot.move_forward(10)
+        elif key_state[pygame.K_DOWN]:
+            robot.move_backward(10)
 
+
+        if key_state[pygame.K_LEFT]:
+            robot.turn_left(10)
+        elif key_state[pygame.K_RIGHT]:
+            robot.turn_right(10)
+
+      
         # synchronize code execution based on runtime and the camera FPS
         t2 = time.time()
         if t2 - t1 < 1 / 60:
