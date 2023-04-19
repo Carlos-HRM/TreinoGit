@@ -1,5 +1,4 @@
 import time
-import pygame
 from bridge import (Actuator, Replacer, Vision, Referee)
 from classes import Robot, Ball
 
@@ -16,28 +15,7 @@ if __name__ == "__main__":
 
     #Initialize the robot
     robot = Robot(actuator=actuator, index = 0)
-
-    #Configurando teclas do robô
-    keys = {
-        pygame.K_UP: 'move_forward',
-        pygame.K_DOWN: 'move_backward',
-        pygame.K_LEFT: 'turn_left',
-        pygame.K_RIGHT: 'turn_right',
-    }
-
-    # Rastreie o estado atual de cada tecla
-    key_state = {
-        pygame.K_UP: False,
-        pygame.K_DOWN: False,
-        pygame.K_LEFT: False,
-        pygame.K_RIGHT: False,
-}
-
-    # Create a window (optional)
-    pygame.init()
-    screen = pygame.display.set_mode((640, 480))
-    pygame.display.set_caption("FIRASim Control")
-    pygame.key.set_repeat()
+    ball = Ball()
 
 
     # Main infinite loop
@@ -64,31 +42,17 @@ if __name__ == "__main__":
 
             A variavel data_ball é uma lista única que contém os dados da bola. O acesso a eles é feito da mesma forma, porém ele não possui angulo
         '''
+        robot.setPoseRobot(data_our_bot[0].x, data_our_bot[0].y, data_our_bot[0].a)
+        
+        print("Posição x: ", robot.get_xPosRobot())
+        print("Posicao y: ", robot.get_yPosRobot())
+        print("")
 
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key in keys:
-                    # Marque a tecla correspondente como pressionada
-                    key_state[event.key] = True
-            elif event.type == pygame.KEYUP:
-                if event.key in keys:
-                    # Marque a tecla correspondente como liberada e defina a velocidade do robô para 0
-                    key_state[event.key] = False
-                    robot.setVel(0, 0)
-
-
-        # Atualize a velocidade do robô com base nas teclas pressionadas
-        if key_state[pygame.K_UP]:
-            robot.move_forward(10)
-        elif key_state[pygame.K_DOWN]:
-            robot.move_backward(10)
-
-
-        if key_state[pygame.K_LEFT]:
-            robot.turn_left(10)
-        elif key_state[pygame.K_RIGHT]:
-            robot.turn_right(10)
-
+        ball.setPoseBall(data_ball.x ,data_ball.y)
+        print("X bola: ", ball.get_xPosBall())
+        print("Y bola: ", ball.get_yPosBall())
+        print("")
+        
       
         # synchronize code execution based on runtime and the camera FPS
         t2 = time.time()

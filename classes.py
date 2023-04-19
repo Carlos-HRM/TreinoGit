@@ -4,7 +4,7 @@ class Robot:
         self.actuator = actuator
         self.x = 0
         self.y = 0
-        self.a = 0
+        self.angulo = 0
         self.speed = speed
 
 
@@ -16,7 +16,7 @@ class Robot:
         return self.yPos
 
     def get_theta(self):
-        return self.theta
+        return self.angulo
 
     def get_L(self):
         return self.L
@@ -41,8 +41,8 @@ class Robot:
         self.R = R
 
     def setPoseRobot(self, xPos, yPos, theta):
-        self.set_xPos(xPos)
-        self.set_yPos(yPos)
+        self.set_xPosRobot(xPos)
+        self.set_yPosRobot(yPos)
         self.set_theta(theta)
 
     def setVel(self, vL, vR):
