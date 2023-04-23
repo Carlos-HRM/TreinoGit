@@ -1,11 +1,15 @@
+import numpy as np
+
 class Robot:
-    def __init__(self, index, actuator, speed=10):
+    def __init__(self, index, actuator):
         self.index = index
         self.actuator = actuator
         self.x = 0
         self.y = 0
         self.angulo = 0
-        self.speed = speed
+        self.speed = 20
+        self.L = 7.5
+        self.R = 3.5
 
 
     # Getters
@@ -16,13 +20,14 @@ class Robot:
         return self.yPos
 
     def get_theta(self):
-        return self.angulo
+        return self.theta
 
     def get_L(self):
         return self.L
 
     def get_R(self):
         return self.R
+    
 
     # Setters
     def set_xPosRobot(self, xPos):
