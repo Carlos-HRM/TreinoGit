@@ -16,7 +16,7 @@ class Robot:
         return self.yPos
 
     def get_theta(self):
-        return self.angulo
+        return self.theta
 
     def get_L(self):
         return self.L

@@ -46,6 +46,7 @@ if __name__ == "__main__":
         
         print("Posição x: ", robot.get_xPosRobot())
         print("Posicao y: ", robot.get_yPosRobot())
+        print("Angulo do robo: ",robot.get_theta())
         print("")
 
         ball.setPoseBall(data_ball.x ,data_ball.y)
