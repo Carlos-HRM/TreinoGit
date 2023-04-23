@@ -56,17 +56,6 @@ class Robot:
     def get_index(self):
         return self.index
     
-    def move_forward(self, speed):
-        self.setVel(speed, speed)
-
-    def move_backward(self, speed):
-        self.setVel(-speed, -speed)
-
-    def turn_left(self, speed):
-        self.actuator.send(self.index, -self.speed, self.speed)
-
-    def turn_right(self, speed):
-        self.actuator.send(self.index, self.speed, -self.speed)
 
 
 
