@@ -1,11 +1,15 @@
+import numpy as np
+
 class Robot:
-    def __init__(self, index, actuator, speed=10):
+    def __init__(self, index, actuator):
         self.index = index
         self.actuator = actuator
         self.x = 0
         self.y = 0
-        self.a = 0
-        self.speed = speed
+        self.angulo = 0
+        self.speed = 20
+        self.L = 7.5
+        self.R = 3.5
 
 
     # Getters
@@ -23,6 +27,7 @@ class Robot:
 
     def get_R(self):
         return self.R
+    
 
     # Setters
     def set_xPosRobot(self, xPos):
@@ -41,8 +46,8 @@ class Robot:
         self.R = R
 
     def setPoseRobot(self, xPos, yPos, theta):
-        self.set_xPos(xPos)
-        self.set_yPos(yPos)
+        self.set_xPosRobot(xPos)
+        self.set_yPosRobot(yPos)
         self.set_theta(theta)
 
     def setVel(self, vL, vR):
@@ -51,17 +56,6 @@ class Robot:
     def get_index(self):
         return self.index
     
-    def move_forward(self, speed):
-        self.setVel(speed, speed)
-
-    def move_backward(self, speed):
-        self.setVel(-speed, -speed)
-
-    def turn_left(self, speed):
-        self.actuator.send(self.index, -self.speed, self.speed)
-
-    def turn_right(self, speed):
-        self.actuator.send(self.index, self.speed, -self.speed)
 
 
 
@@ -89,4 +83,3 @@ class Ball():
     def setPoseBall(self, xPos, yPos):
         self.set_xPosBall(xPos)
         self.set_yPosBall(yPos)
-

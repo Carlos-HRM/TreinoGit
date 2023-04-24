@@ -1,5 +1,5 @@
 import time
-import pygame
+import numpy as np
 from bridge import (Actuator, Replacer, Vision, Referee)
 from classes import Robot, Ball
 
@@ -16,28 +16,10 @@ if __name__ == "__main__":
 
     #Initialize the robot
     robot = Robot(actuator=actuator, index = 0)
+    ball = Ball()
 
-    #Configurando teclas do robô
-    keys = {
-        pygame.K_UP: 'move_forward',
-        pygame.K_DOWN: 'move_backward',
-        pygame.K_LEFT: 'turn_left',
-        pygame.K_RIGHT: 'turn_right',
-    }
+    kp = 1.5
 
-    # Rastreie o estado atual de cada tecla
-    key_state = {
-        pygame.K_UP: False,
-        pygame.K_DOWN: False,
-        pygame.K_LEFT: False,
-        pygame.K_RIGHT: False,
-}
-
-    # Create a window (optional)
-    pygame.init()
-    screen = pygame.display.set_mode((640, 480))
-    pygame.display.set_caption("FIRASim Control")
-    pygame.key.set_repeat()
 
 
     # Main infinite loop
@@ -59,37 +41,48 @@ if __name__ == "__main__":
             - Posição 1 : Robô 1
             - Posição 2 : Robô 2
             Para acessar as informações x, y, a (angulo) e velocidades, vejam a declaração da classe no arquivo bridge.py
-
             A variavel data_their_bots segue a mesma ideia, porém para os robôs do outro time
-
             A variavel data_ball é uma lista única que contém os dados da bola. O acesso a eles é feito da mesma forma, porém ele não possui angulo
         '''
 
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key in keys:
-                    # Marque a tecla correspondente como pressionada
-                    key_state[event.key] = True
-            elif event.type == pygame.KEYUP:
-                if event.key in keys:
-                    # Marque a tecla correspondente como liberada e defina a velocidade do robô para 0
-                    key_state[event.key] = False
-                    robot.setVel(0, 0)
 
 
-        # Atualize a velocidade do robô com base nas teclas pressionadas
-        if key_state[pygame.K_UP]:
-            robot.move_forward(10)
-        elif key_state[pygame.K_DOWN]:
-            robot.move_backward(10)
+        #atualiza posicao do robo
+        robot.setPoseRobot(data_our_bot[0].x, data_our_bot[0].y, data_our_bot[0].a)
+
+        #converte o angulo de radiano para graus
+        theta_robot = np.rad2deg(data_our_bot[0].a)
+
+        #atualiza posicao da bola
+        ball.setPoseBall(data_ball.x, data_ball.y)
+
+        #calcula angulo entre robo e bola
+        theta_d = np.rad2deg(np.arctan2(data_ball.y - data_our_bot[0].y, data_ball.x - data_our_bot[0].x))
+
+        #calcula erro angular
+        theta_e = theta_d - theta_robot
+
+        
+        #trata o erro angular para garantir que ele esteja sempre entre -180 e 180
+        if theta_e > 180:
+            theta_e -= 360
+        elif theta_e < -180:
+            theta_e += 360
 
 
-        if key_state[pygame.K_LEFT]:
-            robot.turn_left(10)
-        elif key_state[pygame.K_RIGHT]:
-            robot.turn_right(10)
+        #calcula velocidade angular
+        w = kp * np.deg2rad(theta_e)
 
-      
+        #Converte velocidade angular para as rodas
+        vel = robot.speed
+        l = robot.get_L()
+        vel_esq = vel - w * l/2
+        vel_dir = vel + w * l/2
+        
+        #seta a velocidade de cada roda do robô
+        robot.setVel(vel_esq, vel_dir)
+    
+
         # synchronize code execution based on runtime and the camera FPS
         t2 = time.time()
         if t2 - t1 < 1 / 60:
